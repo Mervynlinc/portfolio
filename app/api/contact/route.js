@@ -1,4 +1,8 @@
-const recipient = "namanyamervyn@gmail.com";
+import nodemailer from "nodemailer";
+
+export const runtime = "nodejs";
+
+const defaultRecipient = "namanyamervyn@gmail.com";
 const rateLimit = new Map();
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
@@ -32,7 +36,6 @@ function consumeRateLimit(ip, now = Date.now()) {
     return {
       allowed: false,
       retryAfter: Math.max(1, Math.ceil((bucket.resetAt - now) / 1000)),
-      remaining: 0,
       resetAt: bucket.resetAt,
     };
   }
@@ -40,9 +43,31 @@ function consumeRateLimit(ip, now = Date.now()) {
   bucket.count += 1;
   return {
     allowed: true,
-    remaining: RATE_LIMIT_MAX - bucket.count,
     resetAt: bucket.resetAt,
   };
+}
+
+function createSmtpTransport() {
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!host || !user || !pass || !process.env.SMTP_FROM) return null;
+  if (!Number.isInteger(port) || port < 1 || port > 65535) return null;
+
+  const secureSetting = process.env.SMTP_SECURE?.toLowerCase();
+  const secure = secureSetting ? secureSetting === "true" : port === 465;
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure,
+    auth: { user, pass },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 20000,
+  });
 }
 
 export async function POST(request) {
@@ -50,7 +75,7 @@ export async function POST(request) {
   if (!limit.allowed) {
     const waitMinutes = Math.max(1, Math.ceil(limit.retryAfter / 60));
     return Response.json(
-      { error: "Too many messages. Please try again in about " + waitMinutes + " minute" + (waitMinutes === 1 ? "" : "s") + "." },
+      { error: `Too many messages. Please try again in about ${waitMinutes} minute${waitMinutes === 1 ? "" : "s"}.` },
       {
         status: 429,
         headers: {
@@ -60,16 +85,6 @@ export async function POST(request) {
           "X-RateLimit-Reset": String(Math.ceil(limit.resetAt / 1000)),
         },
       },
-    );
-  }
-
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL;
-
-  if (!apiKey || !from) {
-    return Response.json(
-      { error: "Email sending is not configured yet. Please email me directly." },
-      { status: 503 },
     );
   }
 
@@ -92,7 +107,7 @@ export async function POST(request) {
   if (
     !name || name.length > 100 ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sender) || sender.length > 254 ||
-    !subject || subject.length > 180 ||
+    !subject || subject.length > 180 || /[\r\n]/.test(subject) ||
     !message || message.length > 5000
   ) {
     return Response.json(
@@ -101,35 +116,28 @@ export async function POST(request) {
     );
   }
 
+  const transporter = createSmtpTransport();
+  if (!transporter) {
+    return Response.json(
+      { error: "SMTP email is not configured yet. Please email me directly." },
+      { status: 503 },
+    );
+  }
+
   try {
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to: [recipient],
-        reply_to: sender,
-        subject,
-        text: "From: " + name + " <" + sender + ">\n\n" + message,
-      }),
-      cache: "no-store",
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM,
+      to: process.env.CONTACT_TO || defaultRecipient,
+      replyTo: sender,
+      subject,
+      text: `From: ${name} <${sender}>\n\n${message}`,
     });
 
-    if (!response.ok) {
-      console.error("Contact email provider returned status", response.status);
-      return Response.json(
-        { error: "Your message could not be sent. Please try again or email me directly." },
-        { status: 502 },
-      );
-    }
-
     return Response.json({ sent: true });
-  } catch {
+  } catch (error) {
+    console.error("SMTP contact message failed:", error instanceof Error ? error.message : "Unknown SMTP error");
     return Response.json(
-      { error: "The email service could not be reached. Please try again." },
+      { error: "Your message could not be sent. Please try again or email me directly." },
       { status: 502 },
     );
   }

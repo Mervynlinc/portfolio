@@ -1,17 +1,20 @@
 # Namanya Mervyn portfolio
 
-Next.js App Router with Tailwind CSS v4. The contact form sends through Resend and displays a toast with the result. It limits each client IP to five submissions per 15-minute window in each server process. Configure RESEND_API_KEY and RESEND_FROM_EMAIL in the server environment; the sender address must be allowed by your Resend account. The contact form sends to Namanya's email address and uses the visitor's address as the reply-to address.
+Next.js App Router portfolio with Tailwind CSS v4. Contact messages are sent directly through an SMTP server using Nodemailer. The project does not use an email API service. The form limits each client IP to five submissions per 15-minute window in each server process, validates input, and sets the visitor's address as the reply-to address.
 
 ## Run locally
 
 ```sh
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Open `http://localhost:3000`. For a production build, run `npm run build` and then `npm start`.
+Open `http://localhost:3000`. Set the SMTP values in `.env.local` before sending contact messages. `SMTP_FROM` must be an address your SMTP account is allowed to send from. `CONTACT_TO` defaults to `namanyamervyn@gmail.com`.
 
-The Julius Caesar GLB and portrait artwork are in `public/`. The 3D viewer is loaded from Google's hosted `<model-viewer>` script. The Resend API key stays on the server and is never sent to the browser.
+For port 587, set `SMTP_SECURE=false` and let the connection upgrade with STARTTLS. For port 465, set `SMTP_SECURE=true` for TLS from connection start. Keep SMTP credentials private and out of client-side code.
+
+For a production build, run `npm run build` and then `npm start`.
 
 ## GitHub data
 
