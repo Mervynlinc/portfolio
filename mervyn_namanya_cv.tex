@@ -1,0 +1,67 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[margin=1.65cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{microtype}
+
+\definecolor{accent}{HTML}{174A6E}
+\definecolor{muted}{HTML}{4B5563}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=1.25em, itemsep=1.5pt, topsep=3pt, parsep=0pt}
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0pt}{}[\vspace{-3pt}\color{accent}\titlerule]
+\titlespacing*{\section}{0pt}{10pt}{5pt}
+
+\newcommand{\experience}[4]{%
+  \textbf{#1}\hfill{\small\color{muted}#2}\\[-1pt]
+  \textit{#3}\hfill{\small\color{muted}#4}\par
+}
+
+\begin{document}
+
+{\centering
+  {\LARGE\bfseries\color{accent} NAMANYA MERVYN}\par
+  \vspace{4pt}
+  Kampala, Uganda\quad $\vert$\quad +256 786 556 617 / +256 702 988 255\par
+  \href{mailto:namanyamervyn@gmail.com}{namanyamervyn@gmail.com}
+  \quad $\vert$\quad \href{https://mervyn.dev}{mervyn.dev}\par
+}
+
+\section{Summary}
+Software Engineering student with practical experience in software development, computer instruction, and network support. Familiar with the software development lifecycle, collaborative development using Git, and building web applications with React, PHP, and MySQL. Also experienced in tutoring computer applications and carrying out networking exercises using Cisco Packet Tracer and Wireshark.
+
+\section{Work Experience}
+\experience{Industrial Trainee -- Software Engineering}{Jun--Jul 2025}{Nugsoft Technologies}{Kampala, Uganda}
+\begin{itemize}
+  \item Contributed to web application development using React, PHP, and MySQL, and used Git and GitHub in a collaborative workflow.
+  \item Participated in requirements discussions, design reviews, sprint activities, and feedback sessions with developers.
+  \item Used Python with Pandas, NumPy, and Matplotlib for data cleaning, analysis, and visualization; gained introductory exposure to AI concepts.
+\end{itemize}
+
+\vspace{3pt}
+\experience{Industrial Trainee -- IT and Computer Instruction}{Jun--Jul 2026}{Institute of Gender and Development Studies, Makerere University}{Kampala, Uganda}
+\begin{itemize}
+  \item Tutored Computer Competency Assessment classes in Microsoft Word, Excel, Access, PowerPoint, email, and internet use, and supported IT Essentials sessions.
+  \item Guided students through practical computer exercises, adapting demonstrations and instructions to different levels of experience.
+  \item Practiced network configuration and troubleshooting, including IP addressing, subnetting, DHCP, routing, and LAN connectivity.
+  \item Used Cisco Packet Tracer and Wireshark to simulate networks, inspect packet traffic, and study client--server communication.
+\end{itemize}
+
+\section{Education}
+\textbf{Bachelor of Software Engineering}\hfill{\small\color{muted}Aug 2023--Present}\\
+Mbarara University of Science and Technology
+
+\section{Technical Skills}
+\textbf{Programming and web:} JavaScript, Python, React, Express, PHP, REST APIs\\
+\textbf{Data:} MySQL, MongoDB, Pandas, NumPy, Matplotlib\\
+\textbf{Networking:} Cisco Packet Tracer, Wireshark, IP addressing, subnetting, DHCP, routing, LANs\\
+\textbf{Tools:} Git, GitHub, Docker, CI/CD
+
+\end{document}

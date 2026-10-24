@@ -1,140 +1,23 @@
-# 3D Portfolio
+# Namanya Mervyn portfolio
 
-A modern, interactive 3D portfolio website built with React, Three.js, and Vite. Features immersive 3D graphics, smooth animations, and a responsive design to showcase projects and skills.
+Next.js App Router portfolio with Tailwind CSS v4. Contact messages are sent directly through an SMTP server using Nodemailer. The project does not use an email API service. The form limits each client IP to five submissions per 15-minute window in each server process, validates input, and sets the visitor's address as the reply-to address.
 
-## ✨ Features
+## Run locally
 
-- 🎨 **3D Graphics** - Interactive 3D models using Three.js via React Three Fiber
-- 🌟 **Stunning Animations** - Smooth transitions with Framer Motion
-- 📱 **Responsive Design** - Optimized for all devices with Tailwind CSS
-- 📧 **Contact Form** - Integrated email functionality using EmailJS
-- 🚀 **Fast Performance** - Built with Vite for lightning-fast development and production builds
-- 🎯 **Modern UI** - Clean, professional design with animated timelines and parallax effects
-
-## 🛠️ Technologies
-
-- **Frontend Framework**: React 19
-- **Build Tool**: Vite
-- **3D Library**: Three.js, React Three Fiber, React Three Drei
-- **Animations**: Framer Motion
-- **Styling**: Tailwind CSS
-- **Routing**: React Router DOM
-- **Email Service**: EmailJS
-- **UI Components**: React Vertical Timeline, React Parallax Tilt
-
-## 📋 Prerequisites
-
-Before running this project, make sure you have:
-
-- [Node.js](https://nodejs.org/) (version 16 or higher)
-- npm (comes with Node.js)
-
-## 🚀 Getting Started
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Mervynlinc/3dPortfolio.git
-   cd 3dPortfolio
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-   The app will be available at `http://localhost:5173/` (or the next available port)
-
-4. **Build for production**
-   ```bash
-   npm run build
-   ```
-
-5. **Preview production build**
-   ```bash
-   npm run preview
-   ```
-
-## 📁 Project Structure
-
-```
-3dPortfolio/
-├── public/              # Static assets (3D models, textures)
-│   ├── desktop_pc/     # Desktop computer 3D model
-│   └── planet/         # Planet/Earth 3D model
-├── src/
-│   ├── assets/         # Images and other assets
-│   ├── components/     # React components
-│   │   ├── canvas/    # 3D canvas components (Earth, Computers, Stars, Ball)
-│   │   ├── About.jsx
-│   │   ├── Contact.jsx
-│   │   ├── Experience.jsx
-│   │   ├── Hero.jsx
-│   │   ├── Navbar.jsx
-│   │   ├── Tech.jsx
-│   │   └── Works.jsx
-│   ├── constants/      # Constants and configuration data
-│   ├── hoc/           # Higher-order components
-│   ├── utils/         # Utility functions (animations, motion)
-│   ├── App.jsx        # Main app component with routing
-│   ├── Home.jsx       # Home page layout
-│   └── main.jsx       # App entry point
-├── index.html         # HTML template
-├── package.json       # Dependencies and scripts
-├── tailwind.config.js # Tailwind CSS configuration
-└── vite.config.js     # Vite configuration
+```sh
+npm install
+cp .env.example .env.local
+npm run dev
 ```
 
-## 🎮 Available Scripts
+Open `http://localhost:3000`. Set the SMTP values in `.env.local` before sending contact messages. `SMTP_FROM` must be an address your SMTP account is allowed to send from. `CONTACT_TO` defaults to `namanyamervyn@gmail.com`.
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint to check code quality
+For port 587, set `SMTP_SECURE=false` and let the connection upgrade with STARTTLS. For port 465, set `SMTP_SECURE=true` for TLS from connection start. Keep SMTP credentials private and out of client-side code.
 
-## 🎨 Customization
+For a production build, run `npm run build` and then `npm start`.
 
-### Changing 3D Models
-Place your GLTF models in the `public/` folder and update the paths in the canvas components (`src/components/canvas/`).
+## GitHub data
 
-### Updating Content
-Edit the constants file at `src/constants/index.js` to update:
-- Technologies
-- Projects
-- Experience timeline
-- Contact information
+The featured project cards load descriptions, primary languages, and star counts for the curated repositories from GitHub's public REST API. Results are cached for one hour. The cards keep their local fallback details if GitHub is unavailable.
 
-### Styling
-Modify `tailwind.config.js` and `src/index.css` to customize colors, fonts, and other design elements.
-
-## 📧 EmailJS Setup
-
-To enable the contact form:
-1. Sign up at [EmailJS](https://www.emailjs.com/)
-2. Create an email service and template
-3. Update the credentials in `src/components/Contact.jsx`
-
-## 🐛 Troubleshooting
-
-**Port already in use**: Vite will automatically try the next available port (5174, 5175, etc.)
-
-**3D models not loading**: Ensure GLTF files and textures are in the `public/` folder with correct paths
-
-**Favicon not updating**: Clear browser cache or hard refresh with `Ctrl + F5`
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👤 Author
-
-**Mervyn**
-
-- GitHub: [@Mervynlinc](https://github.com/Mervynlinc)
-
----
-
-⭐ Star this repo if you find it helpful!
+The contribution card shows a daily heatmap for the past year, with current streak and this year's contribution total. It uses public profile data without a token; set `GITHUB_TOKEN` to include contributions GitHub only exposes to an authenticated account. The token is used only by the server route in `app/api/github/route.js`; do not add it to client-side code or commit `.env.local`. Contribution data is cached for one hour.
